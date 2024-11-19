@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <link rel="icon" href="duendecillos.jpeg" type="image/x-icon">
+  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FANTASY DUENDECILLOS</title>
+</head>
+
+<body>
+
+  <div class="container" id="clasificacion" style="display:none;">
+    <h2>CLASIFICACIÓN</h2>
+    <table id="usersTable">
+      <thead>
+        <tr>
+          <th>NOMBRE</th>
+          <th>PUNTOS</th>
+        </tr>
+      </thead>
+      <tbody id="usersTableBody">
+        <!-- Filas generadas dinámicamente con JavaScript -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="container" id="registerContainer">
+    <h2>REGISTRARSE</h2>
+    <div class="input-group">
+      <label for="registerUsername">Usuario</label>
+      <input type="text" id="registerUsername" required>
+    </div>
+    <div class="input-group">
+      <label for="registerPassword">Contraseña</label>
+      <input type="password" id="registerPassword" required>
+    </div>
+    <button class="btn" onclick="register()">Registrarse</button>
+    <button class="btn" onclick="loginpage()">Iniciar sesión</button>
+    <p class="message" id="registerMessage"></p>
+  </div>
+
+  <div class="container" id="loginContainer" style="display:none;">
+    <h2>INICIAR SESIÓN</h2>
+    <div class="input-group">
+      <label for="loginUsername">Usuario</label>
+      <input type="text" id="loginUsername" required>
+    </div>
+    <div class="input-group">
+      <label for="loginPassword">Contraseña</label>
+      <input type="password" id="loginPassword" required>
+    </div>
+    <button class="btn" onclick="login()">Iniciar Sesión</button>
+    <p class="message" id="loginMessage"></p>
+  </div>
+
+  <div class="container" id="plantilla" style="display:none;">
+    <h2>PLANTILLA</h2>
+  
+    <div class="input-group">
+      <label for="campo1">DEL</label>
+      <select id="campo1">
+        <option value="">DEL</option>
+        <option value="Opción A">Hugo Martínez</option>
+        <option value="Opción B">Pepelu Moscosio</option>
+      </select>
+    </div>
+
+    <div class="med-group">
+    <div class="input-group" id="med1">
+    <label for="campo2">MED</label>
+    <select id="campo2">
+      <option value="">MED</option>
+      <option value="Opción A">Alberto Muñoz</option>
+      <option value="Opción B">Pastor Colomé</option>
+      <option value="Opción C">Álvaro González</option>
+      <option value="Opción D">Felipe Álamo</option>
+      <option value="Opción E">Miguel Escavia</option>
+      <option value="Opción F">Miguel Redondo</option>
+      <option value="Opción G">Isaac García</option>
+    </select>
+    </div>
+
+    <div class="input-group" id="med2">
+    <label for="campo3">MED</label>
+    <select id="campo3">
+      <option value="">MED</option>
+      <option value="Opción A">Alberto Muñoz</option>
+      <option value="Opción B">Pastor Colomé</option>
+      <option value="Opción C">Álvaro González</option>
+      <option value="Opción D">Felipe Álamo</option>
+      <option value="Opción E">Miguel Escavia</option>
+      <option value="Opción F">Miguel Redondo</option>
+      <option value="Opción G">Isaac García</option>
+    </select>
+    </div>
+    </div>
+
+    <div class="input-group">
+    <label for="campo4">DEF</label>
+    <select id="campo4">
+      <option value="">DEF</option>
+      <option value="Opción A">Jaime Rivera</option>
+      <option value="Opción B">Juan Berraquero</option>
+      <option value="Opción C">David Bretones</option>
+    </select>
+    </div>
+
+    <div class="input-group">
+    <label for="campo5">POR</label>
+    <select id="campo5">
+      <option value="">POR</option>
+      <option value="Opción A">Manuel Ramón</option>
+      <option value="Opción B">Javier Ruiz</option>
+    </select>
+    </div>
+
+    <button id="logoutButton" class="btn" onclick="logout()">Cerrar Sesión</button>
+    <button id="saveButton" class="btn" onclick="save()">Guardar</button>
+    <button id="calculatePointsButton" class="btn" hidden>Calcular Puntos</button>
+  </div>
+ 
+
+
+  <script>
+    // Variable global para detectar cambios no guardados
+    let changesMade = false;
+    
+    // Función que se ejecuta al cargar la página
+    window.onload = function() {
+      // Cargar usuarios y vista según el día
+      let users = JSON.parse(localStorage.getItem("users")) || [];
+
+      const activeUser = localStorage.getItem("activeUser");
+    
+      if (activeUser) {
+        showLoggedInView(activeUser);  // Muestra la vista de usuario logueado
+        loadUserData(activeUser);      // Carga los datos del usuario
+      }
+    
+      // Asignar puntos y mostrar/ocultar el botón "Guardar" según el día
+      //asignarPuntosDomingo();
+      mostrarEnDiasEspecificos();
+      loadUsers();  // Cargar usuarios en la tabla de clasificación
+    };
+    
+    // Función para mostrar u ocultar el botón "Guardar" en días específicos
+    function mostrarEnDiasEspecificos() {
+      const saveButton = document.getElementById("saveButton");
+      const today = new Date().getDay(); // Obtén el día de la semana
+    
+      // Muestra el botón "Guardar" solo los domingos
+      if (today === 1 || today === 2 || today === 3 ) {
+        saveButton.style.display = "block";
+      } else {
+        saveButton.style.display = "none";
+      }
+    }
+    
+    // Función para registrar un nuevo usuario
+    function register() {
+      const username = document.getElementById("registerUsername").value;
+      const password = document.getElementById("registerPassword").value;
+      const registerMessage = document.getElementById("registerMessage");
+    
+      // Verifica si los campos están completos
+      if (username && password) {
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        const userExists = users.some(user => user.username === username);
+    
+        if (userExists) {
+          registerMessage.textContent = "El usuario ya existe. Intenta con otro nombre.";
+          registerMessage.style.color = "red";
+        } else {
+          users.push({ username: username, password: password });
+          localStorage.setItem("users", JSON.stringify(users));
+          registerMessage.textContent = "Registro exitoso. Ahora puedes iniciar sesión.";
+          registerMessage.style.color = "green";
+    
+          // Cambia la vista a la página de inicio de sesión
+          document.getElementById("registerContainer").style.display = "none";
+          document.getElementById("loginContainer").style.display = "block";
+        }
+      } else {
+        registerMessage.textContent = "Por favor, completa todos los campos.";
+        registerMessage.style.color = "red";
+      }
+    }
+    
+    // Función que cambia a la vista de usuario logueado
+    function showLoggedInView(username) {
+      document.getElementById("registerContainer").style.display = "none";
+      document.getElementById("loginContainer").style.display = "none";
+      document.getElementById("plantilla").style.display = "block";
+      document.getElementById("clasificacion").style.display = "block";
+      document.getElementById("loginMessage").textContent = "Inicio de sesión exitoso. ¡Bienvenido, " + username + "!";
+      loadUserData(username);
+    }
+    
+    // Función para cambiar de la vista de registro a la de inicio de sesión
+    function loginpage() {
+      document.getElementById("registerContainer").style.display = "none";
+      document.getElementById("loginContainer").style.display = "block"; // Muestra el formulario de inicio de sesión
+    }
+    
+    // Función para cargar los datos específicos del usuario activo
+    function loadUserData(username) {
+      const userData = JSON.parse(localStorage.getItem(username)) || {};
+      document.getElementById("campo1").value = userData.campo1 || "";
+      document.getElementById("campo2").value = userData.campo2 || "";
+      document.getElementById("campo3").value = userData.campo3 || "";
+      document.getElementById("campo4").value = userData.campo4 || "";
+      document.getElementById("campo5").value = userData.campo5 || "";
+    }
+    
+    // Función que guarda el valor de cada campo específico de la sesión del usuario
+    function saveInput(campoId) {
+      const activeUser = localStorage.getItem("activeUser");
+      if (activeUser) {
+        let userData = JSON.parse(localStorage.getItem(activeUser)) || {};
+        userData[campoId] = document.getElementById(campoId).value; // Actualiza el campo específico
+        localStorage.setItem(activeUser, JSON.stringify(userData)); // Guarda los datos actualizados del usuario
+      }
+    }
+    
+    // Función para cerrar la sesión
+    function logout() {
+      if (changesMade) {
+        const confirmExit = confirm("Tienes cambios sin guardar. ¿Quieres salir sin guardar?");
+        if (confirmExit) {
+          localStorage.removeItem("activeUser");
+          document.getElementById("registerContainer").style.display = "block";
+          document.getElementById("loginContainer").style.display = "none";
+          document.getElementById("plantilla").style.display = "none";
+          document.getElementById("clasificacion").style.display = "none";
+        }
+      } else {
+        localStorage.removeItem("activeUser");
+        document.getElementById("registerContainer").style.display = "block";
+        document.getElementById("loginContainer").style.display = "none";
+        document.getElementById("plantilla").style.display = "none";
+        document.getElementById("clasificacion").style.display = "none";
+      }
+    }
+    
+    // Función para guardar todos los datos del usuario
+    function save() {
+      const activeUser = localStorage.getItem("activeUser");
+    
+      if (activeUser) {
+        const userData = {
+          campo1: document.getElementById("campo1").value,
+          campo2: document.getElementById("campo2").value,
+          campo3: document.getElementById("campo3").value,
+          campo4: document.getElementById("campo4").value,
+          campo5: document.getElementById("campo5").value
+        };
+        localStorage.setItem(activeUser, JSON.stringify(userData));
+      } else {
+        alert("No hay usuario activo. Por favor, inicie sesión.");
+      }
+    }
+    
+    // Función para cargar y mostrar todos los usuarios en la tabla de clasificación
+    function loadUsers() {
+      const usersTableBody = document.getElementById("usersTableBody");
+      usersTableBody.innerHTML = ""; // Limpia la tabla antes de cargar
+    
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      users.sort((a, b) => (b.points || 0) - (a.points || 0)); // Ordenar por puntos
+    
+      users.forEach(user => {
+        const row = document.createElement("tr");
+        const nameCell = document.createElement("td");
+        nameCell.textContent = user.username;
+        row.appendChild(nameCell);
+    
+        const pointsCell = document.createElement("td");
+        pointsCell.textContent = user.points || 0; // Mostrar 0 puntos si no tiene puntos
+        row.appendChild(pointsCell);
+    
+        usersTableBody.appendChild(row);
+      });
+    }
+    
+    // Función de inicio de sesión
+    function login() {
+      const username = document.getElementById("loginUsername").value;
+      const password = document.getElementById("loginPassword").value;
+      const loginMessage = document.getElementById("loginMessage");
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+    
+      const user = users.find(user => user.username === username && user.password === password);
+    
+      if (user) {
+        localStorage.setItem("activeUser", username);
+        showLoggedInView(username);
+        loadUserData(username);
+        loadUsers();
+      } else {
+        loginMessage.textContent = "Usuario o contraseña incorrectos.";
+        loginMessage.style.color = "red";
+      }
+    }
+    
+    // Función para detectar cambios en los select dentro de la plantilla
+    const selects = document.querySelectorAll("#plantilla select");
+    selects.forEach(select => {
+      select.addEventListener("change", function() {
+        changesMade = true;
+      });
+    });
+    
+    // Asignar puntos automáticamente cada domingo
+    function asignarPuntosDomingo() {
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      
+      users.forEach(user => {
+        const userData = JSON.parse(localStorage.getItem(user.username)) || {};
+        const puntos = calcularPuntos(userData);
+        
+        user.points = (user.points || 0) + puntos;
+        localStorage.setItem(user.username, JSON.stringify(userData));
+      });
+    
+      localStorage.setItem("users", JSON.stringify(users));
+      loadUsers(); // Actualizar tabla de clasificación
+    }
+    
+    // Función para calcular los puntos según la plantilla
+    function calcularPuntos(plantilla) {
+      const puntosConfig = {
+        campo1: { "Opción A": 10, "Opción B": 15 },
+        campo2: { "Opción A": 8, "Opción B": 12, "Opción C": 6, "Opción D": 5, "Opción E": 5, "Opción F": 5, "Opción G": 5 },
+        campo3: { "Opción A": 8, "Opción B": 12, "Opción C": 6, "Opción D": 5, "Opción E": 5, "Opción F": 5, "Opción G": 5 },
+        campo4: { "Opción A": 6, "Opción B": 5, "Opción C": 5 },
+        campo5: { "Opción A": 4, "Opción B": 6 }
+      };
+    
+      let totalPuntos = 0;
+      for (let campo in puntosConfig) {
+        const seleccion = plantilla[campo];
+        if (puntosConfig[campo][seleccion]) {
+          totalPuntos += puntosConfig[campo][seleccion];
+        }
+      }
+    
+      return totalPuntos;
+    }
+    
+    // Eventos para botones
+    document.getElementById("saveButton").addEventListener("click", function() {
+      save(); // Llamar a la función guardar
+      alert("Datos guardados exitosamente.");
+    });
+    
+    document.getElementById("calculatePointsButton").addEventListener("click", function() {
+      asignarPuntosDomingo(); // Calcula los puntos
+      alert("Puntos semanales calculados y sumados a la clasificación.");
+    });
+
+
+    </script>
+    
+
+</body>
+</html>

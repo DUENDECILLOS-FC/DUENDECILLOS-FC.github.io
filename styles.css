@@ -1,0 +1,148 @@
+    /* Botones generales */
+    .btn {
+        margin-top: 5px;
+        width: 100%;
+        padding: 10px;
+        background-color: #4CAF50; /* Verde por defecto */
+        color: white;
+        border: none;
+        border-radius: 10px; /* Bordes redondeados */
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        transition: background-color 0.3s, transform 0.2s; /* Animación de hover */
+        }
+    
+      /* Hover efecto */
+    .btn:hover {
+        background-color: #45a049; /* Verde más oscuro */
+        transform: scale(1.05); /* Aumenta ligeramente el tamaño */
+        }
+    
+    /* Botón específico de cerrar sesión */
+    #logoutButton {
+        background-color: #f44336; /* Rojo */
+        }
+    
+    #logoutButton:hover {
+        background-color: #d32f2f; /* Rojo más oscuro */
+        }
+    
+    /* Botón de guardar */
+    #saveButton {
+        background-color: #4cc850; /* Verde */
+        }
+    
+    #saveButton:hover {
+        background-color: #419344; /* Verde más oscuro */
+        }
+    
+      /* Botón de calcular puntos */
+    #calculatePointsButton {
+        background-color: #FF9800; /* Naranja */
+        }
+    
+    #calculatePointsButton:hover {
+        background-color: #FB8C00; /* Naranja más oscuro */
+        }
+
+    body { 
+        font-family: Arial, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background-color: #f2f2f2; 
+        }
+       
+    .container { 
+        margin: 20px; width: 300px; height: 400px; padding: 20px; background: #ffffff; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+        }
+       
+    .container h2 { 
+        text-align: center; 
+        }
+       
+        .input-group { 
+        margin: 15px;  text-align: center; 
+        }
+       
+    .input-group label { 
+        display: block; margin-bottom: 5px; 
+        }
+       
+    .input-group input { 
+        width: 100%; padding: 8px; 
+        }
+       
+    .message { 
+        text-align: center; color: red; 
+        }
+      
+    #logoutButton { 
+        margin-top: 10px; background-color: #f44336; 
+        }
+       
+    #saveButton { 
+          margin-top: 10px; background-color: #45a049; 
+        }
+      
+    #plantilla {
+          background-image: url(campo-futbol.jpg);
+          background-repeat: no-repeat;
+          background-size: 100%;
+        }
+    
+    .med-group {
+          display: flex;
+        }
+    
+    #puntos {
+          background-image: url(campo-futbol.jpg);
+          background-repeat: no-repeat;
+          background-size: 100%;
+        }
+    
+    .puntosTodos {
+          background-color: white;
+          margin: 25px;
+          float: left;
+        }
+    
+    .inputPuntos {
+      width: 60px;
+      padding: 5px;
+      margin-left: 10px;
+      text-align: center;
+        }
+        
+    .puntosTodos {
+      margin-right: 10px;
+        }
+    
+    /* Tabla de clasificación */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        }
+    
+    th, td {
+        padding: 10px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+        }
+    
+    th {
+        background-color: #000000;
+        color: white;
+        font-weight: bold;
+        }
+    
+    tbody tr:nth-child(even) {
+        background-color: #f2f2f2;
+        }
+    
+    tbody tr:hover {
+        background-color: #ddd;
+        }
+    
+    td {
+        color: #333;
+        }
+    
